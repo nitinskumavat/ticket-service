@@ -19,6 +19,9 @@
   "homepage": "https://github.com/nitinskumavat/ticket-service#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "request": "^2.88.2"
+    "mongodb": "^3.5.6",
+    "mongoose": "^5.9.10",
+    "request": "^2.88.2",
+    "validator": "^13.0.0"
   }
 }
