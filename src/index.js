@@ -48,14 +48,40 @@ app.post('/', async (request,response)=>{
 //Get all closed tickets
 app.get('/tickets/',async (request,respone)=>{
     try{
-        const tickets= await Ticket.find({}).sort({seat : 1}).seat;
-        respone.send(tickets);
+        const tickets= await Ticket.find({}).sort({seat : 1});
+        //respone.send(tickets);
+        var seats=[]
+        tickets.forEach((ticket)=>{
+            seats.push({"seat":ticket.seat});
+        })
+        respone.send(seats);
     }
     catch(error){
         respone.status(500).send();
     }
 });
 
+//Get all open seats
+app.get('/tickets/open/',async(request,respone)=>{
+    var seats=new Set();
+    for( var i =1;i<=40;i++)
+        seats.add(i);
+    try{
+        const tickets=  await Ticket.find({});
+        tickets.forEach((ticket)=>{
+            seats.delete(ticket.seat);
+        })
+        var open_seats=[];
+        seats.forEach((seat)=>{
+            open_seats.push({"seat":seat});
+        })
+        respone.send(open_seats);
+    }catch(e){
+        console.log(e);
+    }
+})
+
+//not working
 //Get ticket status by seat number
 app.get('/ticket/:id',(request,response)=>{
     const seat=request.params.id;
@@ -96,6 +122,7 @@ app.patch('/ticket/update/:seat',async(request,response)=>{
         response.status(400).send(e);
     }
 })
+
 
 app.post('/user/',(request,response)=>{
     const passenger=new Passenger(request.body);
