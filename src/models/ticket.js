@@ -20,7 +20,7 @@ const ticket_schema= new Schema({
         default :true
     },
     user:{
-        type: Schema.Types.ObjectId,
+        type: Schema.ObjectId,
         ref:"Passenger"
     }
 });

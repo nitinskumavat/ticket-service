@@ -25,6 +25,10 @@ const passenger_schema=new Schema({
                throw new Error('Email is invalid')
            }
         }
+    },
+    ticker:{
+        type: Schema.ObjectId,
+        ref:"Ticket"
     }
 });
 
