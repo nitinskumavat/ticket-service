@@ -13,7 +13,7 @@ MongoClient.connect(connectionURL,{useNewUrlParser:true},{ useUnifiedTopology: t
     db.dropDatabase().then(()=>{
         console.log("dropped");
     }).catch(()=>{
-        console.log("NOt deleted");
+        console.log("Not deleted");
     })
     // db.collection("ticket").drop((err,res)=>{
     //     if(error)
