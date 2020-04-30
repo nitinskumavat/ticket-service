@@ -1,8 +1,9 @@
 const express=require('express')
 const validator = require('validator');
-require('./db/mongoose')
 const Ticket = require('./models/Ticket')
 const Passenger= require('./models/Passenger')
+require('./db/mongoose')
+
 
 const app=express()
 const port =3000
@@ -45,6 +46,25 @@ app.post('/', async (request,response)=>{
 
 });
 
+//cancle Ticket(close to open)
+app.delete('/ticket/:seat', async(request,respone)=>{
+    const seat=request.params.seat;
+    try{
+        const deleted_ticket=await Ticket.findOneAndDelete({seat});
+        if(deleted_ticket){
+            deleted_user= await Passenger.findByIdAndDelete(deleted_ticket.user);
+            deleted_ticket["user_data"]=deleted_user;
+            console.log(deleted_ticket);
+        }
+            //console.log(deleted_ticket);
+        else
+            console.log('not found');
+        respone.send();
+    }catch(e){
+        respone.status(400).send();
+    }
+})
+
 //Get all closed tickets
 app.get('/tickets/',async (request,respone)=>{
     try{
@@ -81,21 +101,23 @@ app.get('/tickets/open/',async(request,respone)=>{
     }
 })
 
-//not working
+
 //Get ticket status by seat number
-app.get('/ticket/:id',(request,response)=>{
+app.get('/ticket/:id', async(request,response)=>{
     const seat=request.params.id;
     console.log(seat);
-    Ticket.findOne({seat}).populate('user').then((ticket)=>{
-        if(seat>40 || seat<1)
-            return response.status(400).send();
+    if(seat>40 || seat<1)
+        return response.status(400).send();
+    try{
+        const ticket= await Ticket.findOne({seat});
         if(!ticket)
-            response.send({"seat": seat,"booked": false}).json;
+            return response.send({"seat": seat,"booked": false}).json;
+        await ticket.populate('user').execPopulate();
         console.log(ticket.user);
         response.send(ticket);
-    }).catch((error)=>{
-        response.status(500).send(error);
-    })
+    }  catch(e){
+        response.status(400).send(e);
+    }
 })
 
 //update user by seat number

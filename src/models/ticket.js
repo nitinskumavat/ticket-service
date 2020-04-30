@@ -20,7 +20,7 @@ const ticket_schema= new Schema({
         default :true
     },
     user:{
-        type: Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref:"Passenger"
     }
 });

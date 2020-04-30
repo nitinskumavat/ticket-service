@@ -32,6 +32,6 @@ const passenger_schema=new Schema({
     }
 });
 
-const Passenger=mongoose.model('passenger',passenger_schema);
+const Passenger=mongoose.model('Passenger',passenger_schema);
 
 module.exports=Passenger;
