@@ -15,6 +15,10 @@ const passenger_schema=new Schema({
         type: String,
         required: true
     },
+    destination:{
+        type:String,
+        required:true
+    },
     email:{
         type: String,
         required: true,
@@ -31,6 +35,8 @@ const passenger_schema=new Schema({
         ref:"Ticket"
     }
 });
+
+
 
 const Passenger=mongoose.model('Passenger',passenger_schema);
 

@@ -1,6 +1,5 @@
 const mongoose=require('mongoose')
 const validator = require('validator');
-
 const Schema=mongoose.Schema;
 //pending ticket validation
 const ticket_schema= new Schema({
@@ -24,10 +23,7 @@ const ticket_schema= new Schema({
         ref:"Passenger"
     }
 });
-// ticket_schema.post('save',function(error,doc,next){
-//     if(error)
-//         throw new Error('Seat Already taken');
-// });
+
 
 const Ticket = mongoose.model('ticket',ticket_schema);
 
