@@ -1,6 +1,6 @@
 const mongoose=require('mongoose')
-
-mongoose.connect('mongodb+srv://ticket-app:nitin123@cluster0-zrrpf.mongodb.net/ticket-service-app?retryWrites=true&w=majorityretryWrites=true&w=majority',{
+const CONNECTION_URI=process.env.MONGODB_URI || 'mongodb://localhost:27017/ticket-service-api'
+mongoose.connect(CONNECTION_URI,{
     useNewUrlParser:true,
     useCreateIndex:true,
     useUnifiedTopology: true ,
