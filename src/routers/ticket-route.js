@@ -32,7 +32,7 @@ try{
 try{
    await user.save();
    const ticket=await Ticket.findOneAndUpdate({seat:seat},{$set:{user:user._id}},{new:true});
-    response.send(ticket);
+    response.send({ticket,user});
 }catch(e){
     response.status(500).send();
 }
