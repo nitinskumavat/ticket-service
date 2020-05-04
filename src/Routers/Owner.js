@@ -30,7 +30,6 @@ router.post('/owners/login', async (req, res) => {
 })
 
 router.delete('/owner/:username',auth, async (req, res) => {
-    console.log(req.params);
     const username = req.params.username;
     try {
         if(req.username.localeCompare("admin"))
