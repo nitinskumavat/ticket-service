@@ -1,8 +1,9 @@
 const express= require('express');
-const router= new express.Router();
+const auth = require('../Middleware/Auth')
 const Ticket = require('../Models/Ticket')
 const Passenger= require('../Models/Passenger')
 const validator = require('validator');
+const router= new express.Router();
 
 const valid_user=(user)=>{
     if(Object.keys(user).length==5 && validator.isAlpha(user.name) && validator.isAlpha(user.sex) && validator.isAlpha(user.destination) &&  validator.isNumeric(user.age.toString()) && validator.isEmail(user.email))
@@ -15,7 +16,7 @@ return (seat<1 ||seat>40)
 }
 
 //Book ticket (open to close)
-router.post('/ticket/', async (request,response)=>{
+router.post('/ticket/', auth,async (request,response)=>{
 seat=request.body.seat;
 user_data=request.body.user;
 if(!valid_user(user_data))
@@ -39,7 +40,7 @@ try{
 });
 
 //cancel Ticket (close to open)
-router.delete('/ticket/:seat', async(request,respone)=>{
+router.delete('/ticket/:seat', auth,async(request,respone)=>{
 const seat=request.params.seat;
 try{
     var deleted_ticket=await Ticket.findOneAndDelete({seat}).lean();
@@ -93,7 +94,7 @@ try{
 
 
 //Get ticket status by seat number
-router.get('/ticket/:id', async(request,response)=>{
+router.get('/ticket/:id',auth, async(request,response)=>{
 const seat=request.params.id;
 if(seat>40 || seat<1)
     return response.status(400).send();
@@ -109,7 +110,7 @@ try{
 })
 
 //update user by seat number
-router.patch('/ticket/update/:seat',async(request,response)=>{
+router.patch('/ticket/update/:seat',auth,async(request,response)=>{
 const updates=Object.keys(request.body);
 const allowedUpdates=new Set(['name','age','email','sex']);
 const isvalid=updates.every((update)=>{
@@ -126,15 +127,18 @@ try{
     const user=await Passenger.findByIdAndUpdate(user_id,request.body,{new:true});
     if(!user)
         return response.status(404).send();
-    response.send(user);
+    response.send({seat:request.params.seat,user});
 }catch(e){
     response.status(400).send(e);
 }
 })
 
 //Reset all tickets
-router.delete  ('/ticket/reset/all/',async (request,respone)=>{
+router.delete  ('/ticket/reset/all/',auth,async (request,respone)=>{
 try{
+    console.log(request.role);
+    if(request.role.localeCompare("admin"))
+        return respone.status(401).send({error:"You need to be an admin"})
     var deleted_tickets=await Ticket.find({booked:true});
     deleted_tickets.forEach(async function(ticket){
         const pass=await Passenger.findByIdAndDelete(ticket.user);
@@ -147,7 +151,7 @@ try{
 })
 
 //See all users
-router.get('/users/',async (request,respone)=>{
+router.get('/users/',auth,async (request,respone)=>{
 try{
     const u= await Passenger.find({});
     respone.send(u);
