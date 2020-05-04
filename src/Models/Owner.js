@@ -37,7 +37,7 @@ owner_schema.methods.toJSON = function () {
 
 owner_schema.methods.generateAuthToken = async function () {
     const owner = this
-    const token = jwt.sign({ _id: owner._id.toString(),username:owner.username }, 'thisismynewcourse')
+    const token = jwt.sign({ _id: owner._id.toString(),username:owner.username }, process.env.JWT_KEY||'thisismynewcourse')
     console.log('token '+token);
     owner.tokens = owner.tokens.concat({ token })
     await owner.save()

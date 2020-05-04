@@ -7,7 +7,7 @@ const auth=async(req,res,next)=>{
         //console.log(token);
         if(!token)
             return res.status(403).send({ auth: false, message: 'No token provided.' });
-        const decoded =jwt.verify(token,'thisismynewcourse');
+        const decoded =jwt.verify(token,process.env.JWT_KEY||'thisismynewcourse');
         //console.log(decoded);
         const owner=await Owner.findOne({_id:decoded._id, 'tokens.token': token})
 
