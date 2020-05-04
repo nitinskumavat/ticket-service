@@ -15,7 +15,7 @@ const auth=async(req,res,next)=>{
             return res.status(401).send('Access Denied: No Token Provided!');
         }
         req.ownerid=owner._id;
-        req.role=owner.role;
+        req.username=owner.username;
         next();
     }
     catch(e){
