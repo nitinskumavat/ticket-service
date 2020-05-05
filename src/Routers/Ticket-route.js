@@ -12,7 +12,7 @@ const valid_user=(user)=>{
 }
 
 const valid_seat=(seat)=>{
-return (seat<1 ||seat>40)
+return (seat>=1 && seat<=40)
 }
 
 //Book ticket (open to close)
@@ -35,7 +35,7 @@ try{
    const ticket=await Ticket.findOneAndUpdate({seat:seat},{$set:{user:user._id}},{new:true});
     response.send({ticket,user});
 }catch(e){
-    response.status(500).send();
+    response.status(500).send(e);
 }
 });
 
@@ -43,6 +43,8 @@ try{
 router.delete('/ticket/:seat', auth,async(request,respone)=>{
 const seat=request.params.seat;
 try{
+    if(!valid_seat(seat))
+    return respone.status(404).send({error:"Invalid seat number"})
     var deleted_ticket=await Ticket.findOneAndDelete({seat}).lean();
     if(deleted_ticket){
         const deleted_user= await Passenger.findByIdAndDelete(deleted_ticket.user);
@@ -53,7 +55,7 @@ try{
     else
         respone.status(400).send({'error':'Ticket already open!'});
 }catch(e){
-    respone.status(400).send();
+    respone.status(400).send(e);
 }
 })
 
@@ -68,7 +70,7 @@ try{
     respone.send(seats);
 }
 catch(error){
-    respone.status(500).send();
+    respone.status(500).send(error);
 }
 });
 
@@ -88,7 +90,7 @@ try{
     })
     respone.send(open_seats);
 }catch(e){
-    respone.status(404).send();
+    respone.status(404).send(e);
 }
 })
 
@@ -129,7 +131,7 @@ try{
         return response.status(404).send();
     response.send({seat:request.params.seat,user});
 }catch(e){
-    response.status(400).send(e);
+    response.status(400).send({error:'Bad request'});
 }
 })
 
