@@ -118,7 +118,7 @@ try{
 //update user by seat number
 router.patch('/ticket/update/:seat',auth,async(request,response)=>{
 const updates=Object.keys(request.body);
-const allowedUpdates=new Set(['name','age','email','sex']);
+const allowedUpdates=new Set(['name','age','email','sex',"destination"]);
 const isvalid=updates.every((update)=>{
     return allowedUpdates.has(update);
 })
@@ -149,7 +149,11 @@ try{
     deleted_tickets.forEach(async function(ticket){
         const pass=await Passenger.findByIdAndDelete(ticket.user);
     })
-    deleted_tickets=await Ticket.deleteMany({booked:true});
+    deleted_tickets=await Ticket.deleteMany({booked:true}).lean();
+    delete deleted_tickets.opTime;
+    delete deleted_tickets.$clusterTime;
+    delete deleted_tickets.operationTime;
+    delete deleted_tickets.electionId;
     respone.send(deleted_tickets);
 }catch(e){
     respone.status(400).send(e);
