@@ -142,7 +142,6 @@ try{
 //Reset all tickets
 router.delete  ('/ticket/reset/all/',auth,async (request,respone)=>{
 try{
-    console.log(request.username);
     if(request.username.localeCompare("admin"))
         return respone.status(401).send({error:"You need an admin access"})
     var deleted_tickets=await Ticket.find({booked:true});

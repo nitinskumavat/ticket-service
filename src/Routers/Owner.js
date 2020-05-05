@@ -8,7 +8,6 @@ router.post('/owner',auth, async (req, res) => {
     try {
         if(req.username.localeCompare("admin"))
             return res.status(401).send({error:"You need an admin access"})
-        console.log(owner)
         await owner.save()
         const token = await owner.generateAuthToken()
         res.status(201).send({ owner, token })
