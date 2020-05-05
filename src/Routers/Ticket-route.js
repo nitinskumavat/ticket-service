@@ -15,6 +15,10 @@ const valid_seat=(seat)=>{
 return (seat>=1 && seat<=40)
 }
 
+router.get('',(req,resp)=>{
+    resp.send({msg:'welcome'})
+})
+
 //Book ticket (open to close)
 router.post('/ticket/', auth,async (request,response)=>{
 seat=request.body.seat;
